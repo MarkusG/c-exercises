@@ -15,7 +15,7 @@ int get_line(char s[], int lim)
 			break;
 	}
 	s[++i] = '\0';
-	return i;
+	return i - 1;
 }
 
 int main(void)
