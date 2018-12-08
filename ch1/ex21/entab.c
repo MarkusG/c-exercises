@@ -21,9 +21,33 @@ int get_line(char s[], int max)
 int main(void)
 {
 	char line[MAXLINE];
-	char c;
 	while (get_line(line, MAXLINE) != 0)
 	{
-		for (int i = 0; (c = line[i]) != '\0'; i++);
+		char c;
+
+		for (int i = 0; (c = line[i]) != '\0'; i++)
+		{
+			if (c == ' ')
+			{
+				int tabs = 0;
+				int remainingSpaces;
+				// every time we pass a tab stop, add a tab
+				// make sure to not mess up i here
+				while (line[++i] == ' ')
+				{
+					if (i % TABSTOP == 0)
+						tabs++;
+				}
+				remainingSpaces = TABSTOP - ((i) % TABSTOP);
+				i -= 2;
+				
+				for (int j = 0; j < tabs; j++)
+					putchar('\t');
+				for (int j = 0; j < remainingSpaces; j++)
+					putchar(' ');
+			}
+			else
+				putchar(c);
+		}
 	}
 }
