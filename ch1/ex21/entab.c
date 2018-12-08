@@ -27,24 +27,31 @@ int main(void)
 
 		for (int i = 0; (c = line[i]) != '\0'; i++)
 		{
-			if (c == ' ')
+			if (c == ' ' && i > 0) // don't do this if we're at 0, because i % TABSTOP will be 0
 			{
 				int tabs = 0;
+				int numSpaces = 0;
 				int remainingSpaces;
 				// every time we pass a tab stop, add a tab
 				// make sure to not mess up i here
-				while (line[++i] == ' ')
+				while (line[i] == ' ')
 				{
-					if (i % TABSTOP == 0)
+					numSpaces++;
+					if ((i + 1) % TABSTOP == 0)
 						tabs++;
+					i++;
 				}
-				remainingSpaces = TABSTOP - ((i) % TABSTOP);
-				i -= 2;
-				
+				i--;
+
 				for (int j = 0; j < tabs; j++)
 					putchar('\t');
-				for (int j = 0; j < remainingSpaces; j++)
-					putchar(' ');
+
+				if ((i + 1) % TABSTOP != 0)
+				{
+					remainingSpaces = (i + 1) % TABSTOP;
+					for (int j = 0; j < remainingSpaces; j++)
+						putchar(' ');
+				}
 			}
 			else
 				putchar(c);
