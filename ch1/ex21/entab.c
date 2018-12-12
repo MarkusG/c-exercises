@@ -29,22 +29,36 @@ int main(void)
 		{
 			if (c == ' ')
 			{
+				int spaces = 0;
 				int remainingSpaces;
 				// every time we pass a tab stop, add a tab
 				while (line[i] == ' ')
 				{
-					if ((i + 1) % TABSTOP == 0)
-						putchar('\t');
+					spaces++;
 					i++;
 				}
 				i--;
 
+				if (i < TABSTOP)
+				{
+					for (int j = 0; j < spaces; j++)
+						putchar(' ');
+					continue;
+				}
+
+				int tabs = spaces / TABSTOP + 1;
+				for (int j = 0; j < tabs; j++)
+					putchar('\t');
+
 				if ((i + 1) % TABSTOP != 0)
 				{
 					remainingSpaces = (i + 1) % TABSTOP;
+					if (i + 1 < TABSTOP)
+						remainingSpaces = TABSTOP - remainingSpaces;
 					for (int j = 0; j < remainingSpaces; j++)
 						putchar(' ');
 				}
+
 			}
 			else
 				putchar(c);
