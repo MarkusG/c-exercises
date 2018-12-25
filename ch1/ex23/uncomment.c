@@ -1,40 +1,49 @@
 #include <stdio.h>
 #define LIMIT 5000
 
-int getfile(char line[], int lim);
+/* remove comments
+ * from a C program */
+
+int get_file(char s[], int max)
+{
+	int i;
+	char c;
+	for (i = 0; (c = getchar()) != EOF; ++i)
+		if (i < max - 1)
+			s[i] = c;
+	s[++i] = '\0';
+}
 
 int main()
 {
-	char file[LIMIT];
-	char out[LIMIT];
-	int com; // Will be non-zero (true) if we are inside a comment
-	int i, c, l;
+	char line[LIMIT];
+	char s[] = "hello! // this is a quoted string! /* still quoted! */\n";
+	get_file(line, LIMIT); // this is a one-line comment!
 
-	printf("Enter some C code with comments:\n");
-	getfile(file, LIMIT);
-
-	l = i = 0;
-	while ((c = file[l]) != EOF)
+	char c;
+	int in_quoted = /* why would anyone comment like this */ 0;
+	// this is another one-line comment!
+	for (int i = 0; (c = line[i]) != '\0'; i++)
 	{
-		if (c == '/' && file[++l] == '/') // We are in a single-line comment
-			while ((c = file[++l]) != '\n')
-				; // Do not copy to output if we're in a comment
-		if (c == '/' && file[++l] == '*') // We have begun a multi-line comment
-			while ((c = file[++l]) != '*' && file[++l] != '/')
-				; // Do not copy to output if we're in a comment
-		out[i++] = c;
+		if (c == '"' && line[i - 1] != '\'' && !in_quoted) // we've entered a quoted string
+			in_quoted = 1;
+		else if (c == '"' && line[i - 1] != '\\' && in_quoted) // we've exited a quoted string
+			in_quoted = 0;
+
+		if (!in_quoted)
+		{
+			if (c == '/' && line[i + 1] == '/') // single-line comment
+				while (line[++i] != '\n')
+					;
+			if (c == '/' && line[i + 1] == '*') // multi-line comment
+			{
+				while (!(line[i] == '*' && line[i + 1] == '/'))
+					i++;
+				i += 2;
+			}
+		}
+		putchar(line[i]);
 	}
 	
-	printf("Output:\n%s\n", out);
 	return 0;
-}
-
-int getfile(char line[], int lim)
-{
-	int c, i;
-
-	for (i = 0; (c = getchar()) != EOF; ++i)
-		if (i < lim - 1)
-			line[i] = c;
-	line[++i] = '\0';
 }
